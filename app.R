@@ -564,6 +564,8 @@ ui <- navbarPage(
             p(style = "font-weight: 700; font-size: 32px; color: black", "Penjelasan"),
             tags$div(
               style = "font-size:20px;",
+              strong("Format .xlsx adalah format berkas yang digunakan untuk menyimpan data dalam bentuk lembar kerja yang terdiri dari baris dan kolom. Format ini umum digunakan untuk mengelola, menghitung, dan menganalisis data."),
+              br(), br(),
               strong("Variabel yang diperlukan (unggah data tuberkulosis dalam format .xlsx dengan nama variabel berikut):"),
               br(),
               "1. KabupatenKota --> Nama wilayah Kabupaten/Kota",
@@ -578,7 +580,10 @@ ui <- navbarPage(
                 class = "btn btn-primary",
                 style = "padding:6px 14px; font-size:20px;",
                 tags$i(class = "fa fa-download"), " Unduh Template Data Tuberkulosis"
-              )
+              ),
+              br(), br(),
+              strong("Shapefile adalah format data geospasial yang digunakan untuk menyimpan informasi objek geografis seperti titik (point), garis (line), dan wilayah/poligon (polygon). 
+                     Format ini sangat umum digunakan dalam aplikasi GIS (Geographic Information System).")
             )
           )
         )
@@ -934,7 +939,7 @@ server <- function(input, output, session) {
       return(div(
         class = "shp-warning-box",
         tags$i(class = "fa fa-exclamation-triangle"),
-        " File tidak dapat dibaca, pastikan format Excel valid !!!"
+        " Berkas tidak dapat dibaca, pastikan dalam format .xlsx !!!"
       ))
     }
     
