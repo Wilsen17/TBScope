@@ -1345,6 +1345,7 @@ server <- function(input, output, session) {
       "- Soroti wilayah dengan jumlah kasus atau rate TB tinggi sebagai wilayah yang memerlukan perhatian khusus.\n",
       "- Gunakan interpretasi yang runtut, logis, dan hindari pengulangan kalimat.\n",
       "- Gunakan format angka Indonesia dengan pemisah ribuan berupa titik.\n",
+      "- Gunakan Bahasa Indonesia yang baik dan benar.\n",
       "- Akhiri dengan kesimpulan singkat mengenai gambaran umum persebaran kasus TB di wilayah tersebut."
     )
     
