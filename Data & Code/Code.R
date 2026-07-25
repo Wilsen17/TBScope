@@ -8,8 +8,8 @@ library(coda)
 library(ggplot2)
 library(nimble)
 
-jabar <- st_read("C:/Users/lenovo/Downloads/Skripsi/[geosai.my.id]Jawa_Barat_Kab/Jawa_Barat_ADMIN_BPS.shp")
-data_kasus <- read_excel("C:/Users/lenovo/Downloads/Skripsi/Kasus.xlsx")
+jabar <- st_read("C:/Users/lenovo/Downloads/Skripsi/Data & Code/[geosai.my.id]Jawa_Barat_Kab/Jawa_Barat_ADMIN_BPS.shp")
+data_kasus <- read_excel("C:/Users/lenovo/Downloads/Skripsi/Data & Code/Kasus.xlsx")
 
 jabar_joined <- jabar %>%
   left_join(data_kasus, by = c("Kabupaten" = "KabupatenKota")) %>%
@@ -23,6 +23,7 @@ jabar_data <- st_drop_geometry(jabar_joined)
 nb <- poly2nb(jabar_geom)
 lw <- nb2listw(nb, style = "W")
 W  <- nb2mat(nb, style = "B", zero.policy = TRUE)
+W
 
 moran_result <- moran.test(jabar_data$KasusTB, lw, alternative = "greater")
 print(moran_result)
@@ -268,14 +269,14 @@ param_grid      <- expand.grid(b = burnin_values, ns = n_sample_values)
 model_code_icar <- nimbleCode({
   for (i in 1:m) {
     y[i]       ~ dpois(mu[i])
-    log(mu[i]) <- log_pop[i] + beta0 + phi[i] + u[i]
+    log(mu[i]) <- beta0 + phi[i] + u[i]
     phi[i] ~ dskewnorm(xi = xi[i], omega = omega_phi, lambda = lambda_phi)
     u[i]   ~ dnorm(0, sd = sigma_u)
   }
   xi[1:m] ~ dcar_normal(adj[1:L], weights[1:L], num[1:m], tau_xi, zero_mean = 1)
   beta0      ~ dnorm(0, sd = 1)
   omega_phi  ~ dgamma(2, 4)
-  lambda_phi ~ T(dnorm(2, sd = 0.5), 0.5, )
+  lambda_phi ~ dnorm(2, sd = 0.5)
   tau_xi     ~ dgamma(2, 0.5)
   sigma_u    ~ dgamma(2, 10)
 })
@@ -316,7 +317,7 @@ print_results("ICAR", results_icar, param_list_icar)
 model_code_car <- nimbleCode({
   for (i in 1:m) {
     y[i]       ~ dpois(mu[i])
-    log(mu[i]) <- log_pop[i] + beta0 + phi[i] + u[i]
+    log(mu[i]) <- beta0 + phi[i] + u[i]
     phi[i] ~ dskewnorm(xi = xi[i], omega = omega_phi, lambda = lambda_phi)
     u[i]   ~ dnorm(0, sd = sigma_u)
   }
@@ -326,7 +327,7 @@ model_code_car <- nimbleCode({
   )
   beta0      ~ dnorm(0, sd = 1)
   omega_phi  ~ dgamma(2, 4)
-  lambda_phi ~ T(dnorm(2, sd = 0.5), 0.5, )
+  lambda_phi ~ dnorm(2, sd = 0.5)
   tau_xi     ~ dgamma(2, 0.5)
   sigma_u    ~ dgamma(2, 10)
   rho        ~ dunif(0.05, 0.95)
@@ -444,7 +445,7 @@ jabar_geom$RR_icar_skewnorm <- mu_mean_best / mean(jabar_data$KasusTB)
 tm_shape(jabar_geom) +
   tm_polygons(
     fill        = "RR_icar_skewnorm",
-    fill.scale  = tm_scale_intervals(style = "quantile", values = "brewer.greens"),
+    fill.scale  = tm_scale_intervals(style = "quantile", values = "brewer.reds"),
     fill.legend = tm_legend(
       title            = "Risiko Relatif (RR)",
       item.width       = 0.7,

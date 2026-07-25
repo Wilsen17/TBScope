@@ -1120,7 +1120,7 @@ server <- function(input, output, session) {
     )
     
     pal <- colorBin(
-      palette = "Greens",
+      palette = "Reds",
       domain  = shp_rr$RR_icar_skewnorm,
       bins    = qtiles,
       pretty  = FALSE
