@@ -1073,9 +1073,10 @@ server <- function(input, output, session) {
           addProviderTiles("CartoDB.Positron") %>%
           addControl(
             html = '<div style="color:red; font-weight:bold; font-size:18px;
-                    background:white; padding:10px 16px; border-radius:8px; font-family: Nunito, sans-serif">
-                    Harap masukkan data terlebih dahulu pada menu Data !!!
-                    </div>',
+                  background:white; padding:10px 16px; border-radius:8px;
+                  font-family: Nunito, sans-serif">
+                  Harap masukkan data terlebih dahulu pada menu Data !!!
+                  </div>',
             position = "topright"
           )
       )
@@ -1088,10 +1089,10 @@ server <- function(input, output, session) {
         leaflet(shp) %>%
           addProviderTiles("CartoDB.Positron") %>%
           addPolygons(
-            fillColor   = "#2c7be5",
+            fillColor = "#2c7be5",
             fillOpacity = 0.5,
-            color       = "white",
-            weight      = 1
+            color = "white",
+            weight = 1
           )
       )
     }
@@ -1106,7 +1107,11 @@ server <- function(input, output, session) {
       return(
         leaflet() %>%
           addTiles() %>%
-          addPopups(lng = 117, lat = -2, popup = "Mismatch dimensi mu_mean vs shapefile.")
+          addPopups(
+            lng = 117,
+            lat = -2,
+            popup = "Mismatch dimensi mu_mean vs shapefile."
+          )
       )
     }
     
@@ -1121,38 +1126,66 @@ server <- function(input, output, session) {
     
     pal <- colorBin(
       palette = "Reds",
-      domain  = shp_rr$RR_icar_skewnorm,
-      bins    = qtiles,
-      pretty  = FALSE
+      domain = shp_rr$RR_icar_skewnorm,
+      bins = qtiles,
+      pretty = FALSE
     )
     
     leaflet(shp_rr) %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
-        fillColor   = ~pal(RR_icar_skewnorm),
+        fillColor = ~pal(RR_icar_skewnorm),
         fillOpacity = 0.85,
-        color       = "white",
-        weight      = 1,
+        color = "white",
+        weight = 1,
         popup = ~paste0(
-          Kabupaten, ": ",
-          format(round(RR_icar_skewnorm, 4), nsmall = 4, big.mark = ".", decimal.mark = ",")
+          Kabupaten,
+          ": ",
+          format(
+            round(RR_icar_skewnorm, 4),
+            nsmall = 4,
+            big.mark = ".",
+            decimal.mark = ","
+          )
         ),
         label = ~paste0(
-          Kabupaten, ": ",
-          format(round(RR_icar_skewnorm, 4), nsmall = 4, big.mark = ".", decimal.mark = ",")
+          Kabupaten,
+          ": ",
+          format(
+            round(RR_icar_skewnorm, 4),
+            nsmall = 4,
+            big.mark = ".",
+            decimal.mark = ","
+          )
         ),
         highlightOptions = highlightOptions(
-          weight       = 2,
-          color        = "#333",
+          weight = 2,
+          color = "#333",
           bringToFront = TRUE
         )
       ) %>%
       addLegend(
-        pal      = pal,
-        values   = ~RR_icar_skewnorm,
-        title    = "Risiko Relatif (RR)",
+        pal = pal,
+        values = ~RR_icar_skewnorm,
+        title = "Risiko Relatif (RR)",
         position = "topright",
-        opacity  = 1
+        opacity = 1,
+        labFormat = function(type, cuts, p) {
+          
+          lower <- formatC(
+            round(cuts[-length(cuts)], 3),
+            digits = 3,
+            format = "f"
+          )
+          
+          upper <- formatC(
+            round(cuts[-1], 3),
+            digits = 3,
+            format = "f"
+          )
+          
+          paste0(lower, " – ", upper)
+        }
       )
   })
   

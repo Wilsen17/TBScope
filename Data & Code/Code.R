@@ -8,8 +8,8 @@ library(coda)
 library(ggplot2)
 library(nimble)
 
-jabar <- st_read("C:/Users/lenovo/Downloads/Skripsi/Data & Code/[geosai.my.id]Jawa_Barat_Kab/Jawa_Barat_ADMIN_BPS.shp")
-data_kasus <- read_excel("C:/Users/lenovo/Downloads/Skripsi/Data & Code/Kasus.xlsx")
+jabar <- st_read("C:/Document Sekolah/Semester 8/Skripsi/Data & Code/[geosai.my.id]Jawa_Barat_Kab/Jawa_Barat_ADMIN_BPS.shp")
+data_kasus <- read_excel("C:/Document Sekolah/Semester 8/Skripsi/Data & Code/Kasus.xlsx")
 
 jabar_joined <- jabar %>%
   left_join(data_kasus, by = c("Kabupaten" = "KabupatenKota")) %>%
@@ -269,7 +269,7 @@ param_grid      <- expand.grid(b = burnin_values, ns = n_sample_values)
 model_code_icar <- nimbleCode({
   for (i in 1:m) {
     y[i]       ~ dpois(mu[i])
-    log(mu[i]) <- beta0 + phi[i] + u[i]
+    log(mu[i]) <- log[pop] + beta0 + phi[i] + u[i]
     phi[i] ~ dskewnorm(xi = xi[i], omega = omega_phi, lambda = lambda_phi)
     u[i]   ~ dnorm(0, sd = sigma_u)
   }
